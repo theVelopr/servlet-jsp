@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Form Test</title>
+</head>
+<body>
+    <h3>회원 정보</h3>
+    <form action="queryTest" method="GET">
+        ID : <input type="text" name="id" /><br>
+        Password : <input type="password" name="pwd" /> <br>
+        Name : <input type="text" name="name" /><br>
+        Hobby :
+            <input type="checkbox" name="hobby" value="climbing" /> 등산
+            <input type="checkbox" name="hobby" value="sports" /> 운동
+            <input type="checkbox" name="hobby" value="reading" /> 독서
+            <input type="checkbox" name="hobby" value="traveling" /> 여행 <br>
+        Gender :
+            <input type="radio" name="gender" value="male">남자
+            <input type="radio" name="gender" value="female">여자 <br>
+        Reliegion :
+            <select name="religion">
+                <option value="Christian">기독교</option>
+                <option value="Buddhism">불교</option>
+                <option value="Chatholic">천주교</option>
+                <option value="atheism">무교</option>
+            </select><br>
+        Intro :
+            <textarea name="intro" cols="30" rows="10"></textarea><br>
+
+        <input type="submit" value="send"/>
+        <input type="reset" value="reset"/>
+    </form>
+</body>
+</html>
