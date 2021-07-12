@@ -198,3 +198,33 @@
 - 속성값을 지정할 때는 큰따움표(" ")로 감싸준다
 - 시작 태그와 끝 태그의 짝을 맞춰준다
  
+### 요청방식에 따른 처리
+#### GET 방식
+- GET 방식은 Query String을 요청정보 헤더의 URI에 포함함으로 서버로 전달되는 값이 브라우저 주소창에 모두 노출되며, 또한 데이터 크기에 제한이 있어서 서버가 처리할 수 있는 이상의 길이가 전달되면 414 에러코드를 보내도록 정의 되어 있다. 
+
+#### POST 방식
+- POST 방식은 Query String이 요청정보의 BODY에 포함된다. 따라서 외부에 노출되지 안혹 서버에 전달이 되며, 길이에 제한도 없다. 다만 클라이언트 측에서 보낼때 인코딩해서 보내고 전달받은 서버측에서 다시 디코딩하는 추가 작업이 필요하다. 
+
+### 서블릿 
+#### 서블릿 메소드
+- 요청방식에 따라 doGet 메소드와 doPost 메소드를 사용 할 수 있다. 
+
+#### QueryString 추출
+- String getParameter(String name)
+  - QueryString으로 넘어온 값을 하나씩 추출할 때 사용 (name이 중복되지 않고 유일하게 하나만 넘어올때 사용함)
+  - 이 메소드의 반환 타입은 String이기에 추출하고자 하는 정보의 타입에 맞게 int나 float등으로 변환하는 추가 작업이 필요하다.
+
+- Stringp[] getpameterValues(String name)
+  - 같은 이름으로 여러 개의 변수가 전달되었을 때 한번에 모든 값을 추출하여 String 타입의 배열로 받고 싶을 대 사용한다. 
+
+- String getQeuryString() 
+  - 클라이언트가 전달할 QueryString 전체를 하나의 String으로 추출해준다.
+  - GET 방식 요청에서만 사용할 수 있음
+    - URI 정보에서 ? 다음에 나오는 문자열들을 추출하기 때문이다. 
+
+- ServletInputStream getInputStream() throws IOException
+  - HTTP의 요청정보 몸체와 연결된 입력스트림을 생성하여 반환한다. 
+  - Body 정보를 읽고 싶을때 getInputStream()에서 반환한 ServletInputStream으로 읽어올 수 있다.
+  - POST 방식의 QueryString 전체를 한번에 추출할 때 사용 할 수 있는 메소드이다. 
+  
+    
