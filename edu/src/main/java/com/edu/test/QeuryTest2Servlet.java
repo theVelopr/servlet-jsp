@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/queryTest2")
+//@WebServlet("/queryTest2")
 public class QeuryTest2Servlet extends HttpServlet {
 	
 	@Override
