@@ -4,7 +4,7 @@
 	
 	<servlet>
 		<servlet-name>initParam</servlet-name>
-		<servlet-class>com.edu.test.InitParamServlet</servlet-class>
+		<servlet-class>com.edu.test</servlet-class>
 		<init-param>
 			<param-name>id</param-name>
 			<param-value>guest</param-value>

@@ -250,3 +250,16 @@
   - 태그 값으로 숫자를 지정
   - 서버가 시작될 때 생성해야 하는 서블릿 객체가 여러 개일 때 `<load-on-startup>` 태그의 값으로 우선순위를 지정하며, 숫자값이 낮을수록 우선순위가 높다. 
   
+#### 2. ServletConfig
+- web.xml의 `<servlet>` 태그에 설정한 정보를 서블릿 페이지 내에서 추출시, ServletConfig 객체에서 제공하는 메소드를 사용해야한다. 
+- ServletConfig 객체는 서블릿이 실행될 때 자동으로 생성된다. 
+
+> ServletConfig 객체가 생성되는 시점
+> 
+> `[client]` --(서블릿 실행 요청)--> `[Web Server]` ----> `[Servlet Contaier]` --(최초요청)--> `[YES]` OR `[NO]`
+> IF `[YES]`
+>   - 메모리 로딩 -> 서블릿 객체 생성 -> ServletConfig 객체 생성 -> init(ServletCOnfig) -> HttpServletRequest, Response 객체 생성 -> Service(HSRq, HSRsp)
+> IF '[NO]`
+>   - HttpServletRequest, Response 객체 생성 -> Service(HSRq, HSRsp)
+
+
