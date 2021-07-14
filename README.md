@@ -262,4 +262,141 @@
 > IF '[NO]`
 >   - HttpServletRequest, Response 객체 생성 -> Service(HSRq, HSRsp)
 
+`#` Another way
+- HttpServlet 객체를 이용하는 방법
+  - 서블릿 페이지를 작성할때 반드시 상속받아야 하는 객체인 HttpServlet을 이용하는 방법이다.
 
+### 5.2 서블릿 변수
+#### 1. 서블릿 동시 요청
+- CGI 방식 
+  - 웹서버의 직접적인 호출로 실행
+  - 클라이언트로부터 요청이 들어올 때마다 독립적인 프로세스가 만들어진다
+  - 클라이언트의 요청 수에 비례하여 프로세스가 만들어지고 메모리 사용량도 함께 증가  
+- 애플리케이션 서버가 실행하는 방식
+  - 서블릿 컨테이너(애플리케이션)
+  - 서블릿 컨테이너 실행시, 서블릿 객체의 메모리 로딩과 객체 생성, 그리고 init() 메소드 호출 작업을 진행하기 전에 프로세스가 생성됨.
+  - service() 메소드는 최초 요청 시 만들어진 프로세스 안에 작은 프로세스를 만들고, 그 작은 프로세스 안에서 실행된다 (Thread)
+    > - 최초 요청 : 프로세스 생성 
+    >    - service() 요청 : 스레드 생성
+
+#### 2. 서블릿 변수 특징
+- 멤버변수와 지역변수를 구분하여 사용 할 수 있음
+- 멤버변수로 선언
+  - 하나의 서블릿에 여러 클라이언트가 공유해서 사용해야 하는 데이터
+  - 객체 생성 시 힙 메모리에 생성되며, 서블릿을 실행하는 클라이언트들이 공통으로 사용함
+- 지역변수로 선언
+  - 각각의 클라이언트가 독립적으로 사용해야 하는 데이터
+  - 스택 메모리에 생성되며, 클라이언트마다 독립적으로 사용함
+
+> 서블릿의 지역변수는 각 요청마다 스레드별로 스택 영역에 할당되어 사용되지만, 멤버변수는 힙 영역에 할당되어 서블릿을 실행하는 여러 스레드에서 공유한다.
+
+`#` 자바의 변수
+|구분|멤버변수|멤버변수|지역변수 |
+|-|-|-|-|
+||class 변수|instance 변수| |
+|-|-|-|-|
+|선언 위치|클래스의 멤버로 선언|클래스의 멤버로 선언|메소드 안에서 선언|
+|선언 방법|static 선언| | | 
+|사용 메모리|code 영역|heap 영역|stack 영역|
+|생성 시점|프로그램 시작 시|객체 생성 시|메소드 실행 시|
+|제거 시점|프로그램 종료 시|GC에 의해|메소드 종료 시|
+
+- 클래스 변수
+  - 클래스 변수는 코드 영역이나 메소드 영역이라는 곳에 프로그램 시작과 동시에 만들어지나 프로그램이 종료될 때까지 메모리에 존재하므로 프로그램 전반에 걸쳐 사용되는 데이터일 때만 클래스 변수로 저장해야 한다. 
+- 인스턴스 변수
+  - 자바 객체는 new 키워드를 이용해 직접 객체를 생성할 수 있고, 이때 힙 영역에 멤버변수가 만들어진다. 힙 영역에 만들어진 인스턴스 변수는 객체가 삭제될 때까지 사용할 수 있다.
+- 지역 변수
+  - 메소드 실행 시 인자값을 받기 위해 선언된 매개변수도 지역변수에 해당된다. 메소드가 종료되면 스택에 있는 모든 지역변수도 삭제된다.
+  
+#### 3. 서블릿 지역 변수
+- 여러 클라이언트가 동시에 요청했을 때, 요청마다 개별적으로 할당된다.
+- 예시
+  ```java
+  import java.io.IOException;
+  import java.io.PrintWriter;
+
+  import javax.servlet.ServletException;
+  import javax.servlet.annotation.WebServlet;
+  import javax.servlet.http.HttpServlet;
+  import javax.servlet.http.HttpServletRequest;
+  import javax.servlet.http.HttpServletResponse;
+
+  @WebServlet("/local")
+  public class LocalTestServlet extends HttpServlet{
+  
+  	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws
+  	ServletException, IOException {
+    
+  		int number = 0;
+  		String str = req.getParameter("msg");
+  		resp.setContentType("text/html; charset=UTF-8");
+  		PrintWriter out = resp.getWriter();
+  		out.println("<html><head><title>MultiThread Test</title></head></html>");
+  		out.println("<body><h2>처리 결과(지역변수)</h2>");
+  		while(number ++ < 10) {
+  			out.print(str + " : : " + number + "<br>");
+  			out.flush();
+  			System.out.println(str + " : " + number);
+  			try {
+  				Thread.sleep(1000);
+  			} catch (Exception e) {
+  				System.out.println(e);
+  			}
+  		}
+  		out.println("<h2>Done " + str + " !!</h2>");
+  		out.println("</body></html>");
+  		out.close();
+  	}
+  }
+  ```
+  - http://localhost:8080/edu/local?msg=one 과 http://localhost:8080/edu/local?msg=two 두개의 창을 띄워놓고 실행
+  - 처리결과를 보면 두 개의 클라이언트로부터 동일한 서블릿 요청이 들어오는 것을 확인 할 수 있다. 
+    - 서버 입장에서는 하나의 서블릿에 대하여 동시에 두 개의 요청을 처리해야 함 
+    - service() 메소드를 실행하는 두 개의 스레드가 동시에 실행 중
+  - 지역변수로 선언된 데이터는 클라이언트별로 독립적으로 사용할 수 있음을 확인
+  
+#### 4. 서블릿 멤버 변수
+- 각 클라이언트들의 동시 요청 수와 관계없이 하나의 메모리 공간을 할당하여 전역적으로 처리할 때만 멤버변수를 선언하여 활용한다.
+- 예시
+  ```java
+  import java.io.IOException;
+  import java.io.PrintWriter;
+
+  import javax.servlet.ServletException;
+  import javax.servlet.annotation.WebServlet;
+  import javax.servlet.http.HttpServlet;
+  import javax.servlet.http.HttpServletRequest;
+  import javax.servlet.http.HttpServletResponse;
+
+  @WebServlet("/member")
+  public class MemberTestServlet extends HttpServlet {
+  
+  	String str;
+  
+  	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws
+  	ServletException, IOException {
+    
+  		int number = 0;
+  		str = req.getParameter("msg");
+  		resp.setContentType("text/html; charset=UTF-8");
+  		PrintWriter out = resp.getWriter();
+  		out.println("<html><head><title>MultiThread Test</title></head></html>");
+  		out.println("<body><h2>처리 결과(멤버변수)</h2>");
+  		while(number ++ < 10) {
+  			out.print(str + " : " + number + "<br>");
+  			out.flush();
+  			System.out.println(str + " : " + number);
+  			try {
+  				Thread.sleep(1000);
+  			} catch (Exception e) {
+  				System.out.println(e);
+  			}
+  		}
+  		out.println("<h2>Done " + str + " !!</h2>");
+  		out.println("</body></html>");
+  		out.close();
+  	}
+  }
+  ```
+  - 위의 예시 코드를 통해 서블릿을 구현할 때 멤버변수로 선언하면 같은 서블릿을 요청하는 클라리언트끼리 서로 공유되므로 값을 변경하면 서로에게 영향을 미치는 것을 확인 할 수 있다.
+  
