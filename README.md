@@ -74,7 +74,7 @@
 
 |함수|기능|
 |-|-|
-| PrintWriter getWriter() | 서비스를 요청한 클라이언트와 서버 간에 연결된 PrintSriter 객체를 생성하여 반환한다. |
+| PrintWriter getWriter() | 서비스를 요청한 클라이언트와 서버 간에 연결된 PrintWriter 객체를 생성하여 반환한다. |
 | void setBufferSize(int size) | 출력스트림의 버퍼 크기를 설정 |
 | void setCharacterEncoding(String charset) | 응답정보 인코딩에 사용할 문자를 설정 |
 | void setContentLength(int len) | 응답정보의 데이터 길이를 설정 |
@@ -83,16 +83,16 @@
 
 - HttpServletResponse : HTTP 통신 기반의 응답 관련 메소드 확장 제공
 
-|함수|기능|
-|-|-|
+|함수                                               |기능                                                                                                              |
+|---------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
 | void addCookie(Cookie cookie)                     | 인자값으로 주어진 쿠키를 응답정보의 헤더에 추가. 쿠키는 응답정보의 Set-Cookie 헤더의 값으로 추가되어 클라이언트로 전송됨 |
-| String encodeRedirectURL(String url)              | 클라이언트와 서버 간 세션이 유지되는 상태에서 브라우저 쿠키를 지원하지 않을 때 주어진 URL 뒤에 세션 아이디를 추가하고<br/> 인코딩하여 요청을 재전송한다. |
-| String encodeURL(String url)                      | 주어진 URL에 세션 아이디를 추가하여 인코딩해서 반환한다. |
-| void sendREdirect(String location)                | 응답을 클라이언트가 요청한 URL이 아니라 sendRedrict()에 주어진 URL로 재전송. 매개변수 location은 절대 또는 상대 경로로<br/> 지정한다. 이 메소드는 서버의 특정 자원이 다른 URL로 이동할 때 사용할 수 있는 메소드이다. |
-| public void setDateHeader(String name, long date) | 날짜를 밀리 초로 변환하여 주어진 이름과 날짜를 응답정보 헤더에 설정한다. |
-| public void setDeader(String name, String value)  | 응답정보의 헤더에 주어진 이름과 값을 설정한다. |
-| public void setIntHEader(String name, int value)  | 주어진 이름과 정수값을 갖도록 응답정보 헤더에 추가한다. |
-| public void setStatus(int sc)                     | 응답으로 전송될 HTTP 응답에 대한 상태코드를 설정한다. |
+| String encodeRedirectURL(String url)              | 클라이언트와 서버 간 세션이 유지되는 상태에서 브라우저 쿠키를 지원하지 않을 때 주어진 URL 뒤에 세션 아이디를 추가하고<br/> 인코딩하여 요청을 재전송한다.                                                                                                                                                     |
+| String encodeURL(String url)                      | 주어진 URL에 세션 아이디를 추가하여 인코딩해서 반환한다.                                                            |
+| void sendREdirect(String location)                | 응답을 클라이언트가 요청한 URL이 아니라 sendRedrict()에 주어진 URL로 재전송. 매개변수 location은 절대 또는 상대 경로로<br/> 지정한다. 이 메소드는 서버의 특정 자원이 다른 URL로 이동할 때 사용할 수 있는 메소드이다.                                                                                              |
+| public void setDateHeader(String name, long date) | 날짜를 밀리 초로 변환하여 주어진 이름과 날짜를 응답정보 헤더에 설정한다.                                              |
+| public void setHeader(String name, String value)  | 응답정보의 헤더에 주어진 이름과 값을 설정한다.                                                                      |
+| public void setIntHeader(String name, int value)  | 주어진 이름과 정수값을 갖도록 응답정보 헤더에 추가한다.                                                              |
+| public void setStatus(int sc)                     | 응답으로 전송될 HTTP 응답에 대한 상태코드를 설정한다.                                                               |             
 
 ### 요청정보 처리 - HttpServletRequest
 - 서블릿은 주로 웹서버의 애플리케이션 기술로 활용되므로 HTTP 프로토콜 기반의 애플리케이션이라고 할 수 있다. 
@@ -203,7 +203,7 @@
 - GET 방식은 Query String을 요청정보 헤더의 URI에 포함함으로 서버로 전달되는 값이 브라우저 주소창에 모두 노출되며, 또한 데이터 크기에 제한이 있어서 서버가 처리할 수 있는 이상의 길이가 전달되면 414 에러코드를 보내도록 정의 되어 있다. 
 
 #### POST 방식
-- POST 방식은 Query String이 요청정보의 BODY에 포함된다. 따라서 외부에 노출되지 안혹 서버에 전달이 되며, 길이에 제한도 없다. 다만 클라이언트 측에서 보낼때 인코딩해서 보내고 전달받은 서버측에서 다시 디코딩하는 추가 작업이 필요하다. 
+- POST 방식은 Query String이 요청정보의 BODY에 포함된다. 따라서 외부에 노출되지 않도록 서버에 전달이 되며, 길이에 제한도 없다. 다만 클라이언트 측에서 보낼때 인코딩해서 보내고 전달받은 서버측에서 다시 디코딩하는 추가 작업이 필요하다. 
 
 ### 서블릿 
 #### 서블릿 메소드
@@ -214,7 +214,7 @@
   - QueryString으로 넘어온 값을 하나씩 추출할 때 사용 (name이 중복되지 않고 유일하게 하나만 넘어올때 사용함)
   - 이 메소드의 반환 타입은 String이기에 추출하고자 하는 정보의 타입에 맞게 int나 float등으로 변환하는 추가 작업이 필요하다.
 
-- Stringp[] getpameterValues(String name)
+- String [] getpameterValues(String name)
   - 같은 이름으로 여러 개의 변수가 전달되었을 때 한번에 모든 값을 추출하여 String 타입의 배열로 받고 싶을 대 사용한다. 
 
 - String getQeuryString() 
@@ -442,3 +442,46 @@
     - 하나의 요청에서만 상태정보를 유지하고자 할 때 HttpServletReq  uest 객체를 통해서 할 수 있다.
       - javax.servlet.http.HttpServletRequest
 
+### 6.2 ServletContext
+- 웹 애플리케이션 단위로 정보를 유지하는 기능도 있지만, 서블릿과 서블릿 컨테이너 간의 통신하는 기능도 제공함
+
+#### 1. ServletContext 생성
+- 서블릿 컨테이너와 통신하기 위해서 사용되는 메소드를 지원하는 인터페이스
+- 서블릿 컨테이너가 시작될 때 웹서버에 등록된 웹 애플리이케이션 단위로 하나의 ServletContext 객체가 자동으로 생성됨
+  - 생명주기 : 서비스 종료시 소멸
+- Web Application 내에 있는 모든 Servlet, 그리고 JSP간에 정보를 공유할 수 있고, Servelt Container에 대한 정보를 추출할 수 있게 하는 기술
+
+1. init()을 재정의하여 추출하는 방법
+```java
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/context1")
+public class ServletCOntextTestServlet extends HttpServlet{
+	
+	ServletContext servletContext; // serlvetContext 주소값을 갖는 참조 변수 선언
+	
+	@Override // ServletConfig 객체를 config 변수로 받음 
+	public void init(ServletConfig config) throws ServletException {
+		servletContext = config.getServletContext(); // servletContext 주소값을 추출 후, serlvetContext 변수에 저장
+	}
+	
+	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws
+	ServletException, IOException {
+		resp.setContentType("text/html;charset=UTF-8");
+		
+		PrintWriter out = resp.getWriter();
+		out.print("Context : " + servletContext); // 추출한 serlvetContext 주소값을 출력
+	}
+
+}
+```
+2. HttpServlet을 통해 추출하는 방법
