@@ -28,10 +28,11 @@ public class ServletContextTest1Servlet extends HttpServlet{
 		
 		PrintWriter out = resp.getWriter();
 		
-		// ServletContextTest1Servlet 객체의 getServletContext() 메소드를 호출
+		
 		ServletContext servletContext = this.getServletContext();
 		
-		out.print("Context : " + servletContext); // 추출한 serlvetContext 주소값을 출력
+		String location =servletContext.getInitParameter("contextConfig");
+		out.print("location : " + location); // 추출한 serlvetContext 주소값을 출력
 		out.close();
 	}
 
