@@ -14,19 +14,26 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/context1")
 public class ServletContextTest1Servlet extends HttpServlet{
 	
-	ServletContext servletContext; // serlvetContext 주소값을 갖는 참조 변수 선언
+	ServletContext servletContext; 
 	
-	@Override // ServletConfig 객체를 config 변수로 받음 
+	@Override 
 	public void init(ServletConfig config) throws ServletException {
-		servletContext = config.getServletContext(); // servletContext 주소값을 추출 후, serlvetContext 변수에 저장
+		servletContext = config.getServletContext(); 
 	}
 	
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws
 	ServletException, IOException {
+		
 		resp.setContentType("text/html;charset=UTF-8");
 		
 		PrintWriter out = resp.getWriter();
-		out.print("Context : " + servletContext); // 추출한 serlvetContext 주소값을 출력
+		
+		
+		ServletContext servletContext = this.getServletContext();
+		
+		String location =servletContext.getInitParameter("contextConfig");
+		out.print("location : " + location); // 추출한 serlvetContext 주소값을 출력
+		out.close();
 	}
 
 }

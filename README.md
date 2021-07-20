@@ -485,3 +485,99 @@ public class ServletCOntextTestServlet extends HttpServlet{
 }
 ```
 2. HttpServlet을 통해 추출하는 방법
+```java
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/context1")
+public class ServletContextTest1Servlet extends HttpServlet{
+	
+	ServletContext servletContext; 
+	
+	@Override 
+	public void init(ServletConfig config) throws ServletException {
+		servletContext = config.getServletContext(); 
+	}
+	
+	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws
+	ServletException, IOException {
+		
+		resp.setContentType("text/html;charset=UTF-8");
+		
+		PrintWriter out = resp.getWriter();
+		
+		// ServletContextTest1Servlet 객체의 getServletContext() 메소드를 호출
+		ServletContext servletContext = this.getServletContext();
+		
+		out.print("Context : " + servletContext); // 추출한 serlvetContext 주소값을 출력
+		out.close();
+	}
+}
+```
+
+#### 2. ServletContext 변수
+- Web Applicatioin 단위로 사용할 수 있는 변수를 선언하고 활용하려면 web.xml에 변수를 선언한 다음, Servlet에서 ServletContext 객체로 추출해서 사용해야한다.
+
+1. ServletContext 변수 설정
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1">
+	<display-name>edu</display-name>
+	
+	<context-param>
+		<param-name>contexztConfig</param-name>
+		<param-value>/WEB-INF/context.xml</param-value>
+	</context-param>
+
+</web-app>
+```
+
+2. ServletContext 변수 추출
+- web.xml에 <context-param>으로 설정한 변수를 추출할때는 getInitParameter() 메소드를 활용
+
+```java
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/context1")
+public class ServletContextTest1Servlet extends HttpServlet{
+	
+	ServletContext servletContext; 
+	
+	@Override 
+	public void init(ServletConfig config) throws ServletException {
+		servletContext = config.getServletContext(); 
+	}
+	
+	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws
+	ServletException, IOException {
+		
+		resp.setContentType("text/html;charset=UTF-8");
+		
+		PrintWriter out = resp.getWriter();
+		
+		
+		ServletContext servletContext = this.getServletContext();
+		
+		String location =servletContext.getInitParameter("contextConfig");
+		out.print("location : " + location); // 추출한 serlvetContext 주소값을 출력
+		out.close();
+	}
+}
+```
