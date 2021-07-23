@@ -612,3 +612,77 @@ public class ServletContextTest2Servlet extends HttpServlet{
 ```
 - (a) : 웹서버는 웹 애플리케이션 단위로 서비스하기 때문에 클라이언트가 서비스를 요청시, 가장 먼저 웹 애플리케이션을 찾아가야한다.
 getContextPath()는 웹 애플리케이션을 찾아가기 위해 사용하는 경로를 반환함.
+
+4. 웹 애플리케이션 단위 정보 공유
+- Servlet은 동일한 웹 애플리케이션 안에 있는 모든 페이지에서 동일한 ServletContext 객체를 사용하고, 이를 이용하여 Application 단위로 정보를 유지함으로써 공유 할 수 있다. 
+  - 여러 페이지 간에 데이터를 공유하기 위해 아래와 같은 메소드들을 사용한다.
+
+**void setAttribute(String name, Object value)**
+- 공유할 데이터를 ServletContext 객체에 등록하는 메소드 
+- paramter가 Object class로 선언됨
+
+**Object getAttribute(String name)**
+- serlvetContext 객체에 등록한 데이터를 추출하는 메소드
+- 데이터를 추출한 다음에는 항상 원래 데이터 타입으로 캐스팅해서 사용해야함
+
+**void removeAttribute(String name)**
+- setAttribute() 메소드로 등록한 데이터를 삭제한다. 
+
+```java
+@WebServlet("/context3")
+public class ServletContextTest3Servlet extends HttpServlet{
+
+	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws
+	ServletException, IOException {
+		
+		resp.setContentType("text/html;charset=UTF-8");
+		PrintWriter out = resp.getWriter();
+		
+		ServletContext sc = this.getServletContext();
+		
+		ShareObject obj1 = new ShareObject(); //(a)
+		obj1.setCount(100);
+		obj1.setStr("객체 공유 테스트 - 1"); // (b)
+		sc.setAttribute("data1", obj1); //(c)
+		
+		ShareObject obj2 = new ShareObject();
+		obj2.setCount(200);
+		obj2.setStr("객체 공유 테스트 - 2");
+		sc.setAttribute("data2", obj2);
+		
+		out.print("ServletContext 객체에 데이터 등록을 하였습니다.");
+		
+		out.close();
+				
+	}
+}
+```
+- (a) ShareObject 객체의 멤버젼수를 힙 메모리에 생성 -> (생성자 실행) -> 힙 메모리에 만들어진 객체의 시작 주소값을 obj1에 저장 (obj1은 스택 메모리에 할당된 지역변수)
+- (b) 스택 메모리에서 obj1 변수를 찾아 변수가 가지고 있는 힙 메모리 주소를 찾아간 후, setCount()와 setStr() 메소드 실행
+- (c) 시작과 동시에 힙 메모리에 만들어진 servletContext 객체의 주소값을 sc변수에 저장 -> sc는 힙 메모리의 servletcontext 객체를 찾아감 -> setAttribute() 실행
+
+```java
+@WebServlet("/context4")
+public class ServletContextTest4Servlet extends HttpServlet{
+
+	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws
+	ServletException, IOException {
+		
+		resp.setContentType("text/html;charset=UTF-8");
+		PrintWriter out = resp.getWriter();
+		
+		ServletContext sc = this.getServletContext();
+		
+		ShareObject obj1 = (ShareObject) sc.getAttribute("data1");
+		ShareObject obj2 = (ShareObject) sc.getAttribute("data2");
+	
+		out.print("DATA 1 : " + obj1.getCount() + " , " + obj1.getStr() + "<br>");
+		out.print("DATA 2 : " + obj2.getCount() + " , " + obj2.getStr() + "<br>");
+		
+		out.close();
+	}
+}
+```
+- /context3를 실행한 후 /context4를 실행해야 ERROR 500이 뜨지 않음
+- 
+
